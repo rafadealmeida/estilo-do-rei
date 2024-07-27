@@ -12,10 +12,11 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import theme from '@/theme';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { IFormInput, loginSchema } from '@/zod/loginSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
+import InputMask from 'react-input-mask';
 
 import { useRouter } from 'next/navigation';
 import { Servico, servicoSchema } from '@/zod/servicoSchema';
@@ -29,7 +30,7 @@ function Copyright(props: any) {
       {...props}
     >
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
+      <Link color="inherit" href="https://www.df.senac.br/">
         Senac
       </Link>{' '}
       {new Date().getFullYear()}
@@ -38,29 +39,16 @@ function Copyright(props: any) {
   );
 }
 
-export default function SignIn() {
-  const router = useRouter();
-
+export default function Services() {
   const onSubmit: SubmitHandler<Servico> = async (data) => {
     console.log(data);
-    try {
-      const response = await axios.post('/api/service/post', data);
-
-      if (response.status === 200) {
-        // Redireciona para a página principal após o login bem-sucedido
-        router.push('/');
-      } else {
-        console.error('Login failed');
-      }
-    } catch (error) {
-      console.error('Login failed', error);
-    }
   };
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    control,
   } = useForm<Servico>({
     resolver: zodResolver(servicoSchema), // Usando o schema importado
     mode: 'onChange', // Validar em cada alteração dos campos
@@ -84,9 +72,6 @@ export default function SignIn() {
           alignItems: 'center',
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-          <LockOutlinedIcon />
-        </Avatar>
         <Typography component="h1" variant="h5">
           Adicionar serviços
         </Typography>
@@ -102,16 +87,25 @@ export default function SignIn() {
             helperText={errors.nome?.message}
             autoFocus
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            label="Valor do serviço"
-            type="number"
-            id="valor"
-            {...register('valor')}
-            error={!!errors.valor}
-            helperText={errors.valor?.message}
+          <Controller
+            name="valor"
+            control={control}
+            render={({ field }) => (
+              <InputMask mask="R$ 99.999.999,99" maskChar="" {...field}>
+                {(inputProps) => (
+                  <TextField
+                    {...inputProps}
+                    margin="normal"
+                    required
+                    fullWidth
+                    label="Valor do serviço"
+                    type="text"
+                    error={!!errors.valor}
+                    helperText={errors.valor?.message}
+                  />
+                )}
+              </InputMask>
+            )}
           />
 
           <Button
