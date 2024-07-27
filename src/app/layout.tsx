@@ -10,7 +10,7 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import { Page } from '@/components/Page';
+import { PageContainer } from '@/components/PageContainer';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -29,7 +29,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <AppRouterCacheProvider>
           <ThemeProvider theme={theme}>
-            <Page>{children}</Page>
+            <PageContainer>{children}</PageContainer>
           </ThemeProvider>
         </AppRouterCacheProvider>
       </body>
