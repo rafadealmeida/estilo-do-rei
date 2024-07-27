@@ -47,7 +47,7 @@ export default function SignIn() {
 
       if (response.status === 200) {
         // Redireciona para a página principal após o login bem-sucedido
-        router.push('/');
+        router.push('/addService');
       } else {
         console.error('Login failed');
       }
