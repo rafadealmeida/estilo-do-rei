@@ -1,6 +1,6 @@
 import { Stack } from '@mui/material';
 
-export const Page = ({ children }: { children: React.ReactNode }) => {
+export const PageContainer = ({ children }: { children: React.ReactNode }) => {
   return (
     <Stack
       style={{

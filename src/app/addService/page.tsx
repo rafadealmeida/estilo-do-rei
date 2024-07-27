@@ -18,6 +18,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 
 import { useRouter } from 'next/navigation';
+import { Servico, servicoSchema } from '@/zod/servicoSchema';
 
 function Copyright(props: any) {
   return (
@@ -40,10 +41,10 @@ function Copyright(props: any) {
 export default function SignIn() {
   const router = useRouter();
 
-  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+  const onSubmit: SubmitHandler<Servico> = async (data) => {
     console.log(data);
     try {
-      const response = await axios.post('/api/auth/login', data);
+      const response = await axios.post('/api/service/post', data);
 
       if (response.status === 200) {
         // Redireciona para a página principal após o login bem-sucedido
@@ -60,8 +61,8 @@ export default function SignIn() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<IFormInput>({
-    resolver: zodResolver(loginSchema), // Usando o schema importado
+  } = useForm<Servico>({
+    resolver: zodResolver(servicoSchema), // Usando o schema importado
     mode: 'onChange', // Validar em cada alteração dos campos
   });
   return (
@@ -87,37 +88,32 @@ export default function SignIn() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Estilo do Rei
+          Adicionar serviços
         </Typography>
         <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
             fullWidth
-            id="email"
-            label="Email"
-            {...register('email')}
-            error={!!errors.email}
-            helperText={errors.email?.message}
-            autoComplete="email"
+            id="nome"
+            label="Nome do serviço"
+            {...register('nome')}
+            error={!!errors.nome}
+            helperText={errors.nome?.message}
             autoFocus
           />
           <TextField
             margin="normal"
             required
             fullWidth
-            label="Senha"
-            type="password"
-            id="password"
-            {...register('password')}
-            error={!!errors.password}
-            helperText={errors.password?.message}
-            autoComplete="current-password"
+            label="Valor do serviço"
+            type="number"
+            id="valor"
+            {...register('valor')}
+            error={!!errors.valor}
+            helperText={errors.valor?.message}
           />
-          {/* <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          /> */}
+
           <Button
             type="submit"
             fullWidth
@@ -127,18 +123,6 @@ export default function SignIn() {
           >
             Logar
           </Button>
-          {/* <Grid container>
-            <Grid item xs>
-              <Link href="#" variant="body2">
-                Esqueceu a senha?
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link href="#" variant="body2">
-                {"Não tem uma conta? Clique aqui!"}
-              </Link>
-            </Grid>
-          </Grid> */}
         </Box>
       </Box>
       <Copyright sx={{ mt: 8, mb: 4 }} />
