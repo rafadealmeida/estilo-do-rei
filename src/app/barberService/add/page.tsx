@@ -12,13 +12,19 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import theme from '@/theme';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { IFormInput, loginSchema } from '@/zod/loginSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
+import InputMask from 'react-input-mask';
 
 import { useRouter } from 'next/navigation';
 import { Servico, servicoSchema } from '@/zod/servicoSchema';
+import { Alert } from '@mui/material';
+import CheckIcon from '@mui/icons-material/Check';
+
+import ErrorIcon from '@mui/icons-material/Error';
+import { useState } from 'react';
 
 function Copyright(props: any) {
   return (
@@ -29,7 +35,7 @@ function Copyright(props: any) {
       {...props}
     >
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
+      <Link color="inherit" href="https://www.df.senac.br/">
         Senac
       </Link>{' '}
       {new Date().getFullYear()}
@@ -38,22 +44,54 @@ function Copyright(props: any) {
   );
 }
 
-export default function SignIn() {
-  const router = useRouter();
+const processValue = (value: string): string => {
+  return value.replace(/[^\d,]/g, '').replace(',', '.');
+};
+
+interface AlertProps {
+  visible: boolean;
+  status: 'success' | 'error' | '';
+  message: string;
+}
+
+export default function Services() {
+  const [alert, setAlert] = useState<AlertProps>({
+    visible: false,
+    status: '',
+    message: '',
+  });
 
   const onSubmit: SubmitHandler<Servico> = async (data) => {
-    console.log(data);
+    const processedData = {
+      ...data,
+      valor: processValue(data.valor),
+    };
+    console.log('processedData', processedData);
     try {
-      const response = await axios.post('/api/service/post', data);
+      const response = await axios.post('/api/service/create', processedData);
 
-      if (response.status === 200) {
-        // Redireciona para a página principal após o login bem-sucedido
-        router.push('/');
+      if (response.status === 201) {
+        setAlert({
+          visible: true,
+          status: 'success',
+          message: 'Serviço criado com sucesso',
+        });
       } else {
-        console.error('Login failed');
+        setAlert({
+          visible: true,
+          status: 'error',
+          message: 'Falha ao criar serviço',
+        });
       }
     } catch (error) {
-      console.error('Login failed', error);
+      console.error('Post service fail', error);
+      setAlert({
+        visible: true,
+        status: 'error',
+        message: 'Falha ao criar serviço',
+      });
+    } finally {
+      setTimeout(() => setAlert({ ...alert, visible: false }), 3000);
     }
   };
 
@@ -61,6 +99,7 @@ export default function SignIn() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    control,
   } = useForm<Servico>({
     resolver: zodResolver(servicoSchema), // Usando o schema importado
     mode: 'onChange', // Validar em cada alteração dos campos
@@ -84,9 +123,6 @@ export default function SignIn() {
           alignItems: 'center',
         }}
       >
-        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-          <LockOutlinedIcon />
-        </Avatar>
         <Typography component="h1" variant="h5">
           Adicionar serviços
         </Typography>
@@ -102,16 +138,25 @@ export default function SignIn() {
             helperText={errors.nome?.message}
             autoFocus
           />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            label="Valor do serviço"
-            type="number"
-            id="valor"
-            {...register('valor')}
-            error={!!errors.valor}
-            helperText={errors.valor?.message}
+          <Controller
+            name="valor"
+            control={control}
+            render={({ field }) => (
+              <InputMask mask="R$ 99,99" maskChar="" {...field}>
+                {(inputProps) => (
+                  <TextField
+                    {...inputProps}
+                    margin="normal"
+                    required
+                    fullWidth
+                    label="Valor do serviço"
+                    type="text"
+                    error={!!errors.valor}
+                    helperText={errors.valor?.message}
+                  />
+                )}
+              </InputMask>
+            )}
           />
 
           <Button
@@ -121,10 +166,24 @@ export default function SignIn() {
             sx={{ mt: 3, mb: 2 }}
             disabled={isSubmitting}
           >
-            Logar
+            Adicionar Serviço
           </Button>
         </Box>
       </Box>
+      {alert.visible && (
+        <Alert
+          icon={
+            alert.status === 'success' ? (
+              <CheckIcon fontSize="inherit" />
+            ) : (
+              <ErrorIcon fontSize="inherit" />
+            )
+          }
+          severity={alert.status}
+        >
+          {alert.message}
+        </Alert>
+      )}
       <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>
   );

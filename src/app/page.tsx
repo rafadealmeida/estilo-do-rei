@@ -28,7 +28,7 @@ function Copyright(props: any) {
       {...props}
     >
       {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
+      <Link color="inherit" href="https://www.df.senac.br/">
         Senac
       </Link>{' '}
       {new Date().getFullYear()}
@@ -46,8 +46,7 @@ export default function SignIn() {
       const response = await axios.post('/api/auth/login', data);
 
       if (response.status === 200) {
-        // Redireciona para a página principal após o login bem-sucedido
-        router.push('/addService');
+        router.push('/dashboard');
       } else {
         console.error('Login failed');
       }

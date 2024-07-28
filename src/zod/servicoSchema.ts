@@ -1,12 +1,16 @@
-// src/schemas/servicoSchema.ts
 import { z } from 'zod';
 
 export const servicoSchema = z.object({
-  nome: z.string().max(80, 'O nome deve ter no máximo 80 caracteres'),
-  valor: z
-    .number()
-    .min(0, 'O valor deve ser maior ou igual a 0')
-    .or(z.string()),
+  nome: z.string().min(1, 'Nome do serviço é obrigatório'),
+  valor: z.string().refine(
+    (value) => {
+      const numericValue = value.replace(/[^\d,.-]/g, '').replace(',', '.');
+      return numericValue;
+    },
+    {
+      message: 'O valor deve ser um número válido',
+    },
+  ),
 });
 
 export type Servico = z.infer<typeof servicoSchema>;
