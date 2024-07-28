@@ -46,8 +46,7 @@ export default function SignIn() {
       const response = await axios.post('/api/auth/login', data);
 
       if (response.status === 200) {
-        // Redireciona para a página principal após o login bem-sucedido
-        router.push('/addService');
+        router.push('/dashboard');
       } else {
         console.error('Login failed');
       }
