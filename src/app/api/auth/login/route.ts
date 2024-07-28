@@ -1,5 +1,8 @@
-// app/api/auth/login/route.ts
 import { NextRequest, NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcrypt';
+
+const prisma = new PrismaClient();
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,16 +13,36 @@ export async function POST(req: NextRequest) {
       password === process.env.NEXT_PUBLIC_PASSWORD
     ) {
       return NextResponse.json(
-        { message: 'Login bem-sucedido' },
+        { isAdmin: true, message: 'Login bem-sucedido' },
         { status: 200 },
       );
-    } else {
+    }
+
+    const user = await prisma.cliente.findUnique({
+      where: { email },
+    });
+
+    if (!user) {
       return NextResponse.json(
-        { message: 'Credenciais inválidas' },
+        { isAdmin: false, message: 'Usuário não encontrado' },
         { status: 401 },
       );
     }
+
+    const isPasswordValid = await bcrypt.compare(password, user.senha);
+    if (!isPasswordValid) {
+      return NextResponse.json(
+        { isAdmin: false, message: 'Credenciais inválidas' },
+        { status: 401 },
+      );
+    }
+
+    return NextResponse.json(
+      { isAdmin: false, message: 'Login bem-sucedido' },
+      { status: 200 },
+    );
   } catch (error) {
+    console.error('Erro no login:', error);
     return NextResponse.json(
       { message: 'Erro interno do servidor' },
       { status: 500 },
