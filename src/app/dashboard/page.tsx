@@ -29,8 +29,8 @@ const sessions = [
   {
     title: 'Funcionários',
     cards: [
-      { label: 'Adicionar Funcionário', link: '#' },
-      { label: 'Visualizar Funcionários', link: '#' },
+      { label: 'Adicionar Funcionário', link: '/barberWorker/add' },
+      { label: 'Visualizar Funcionários', link: '/barberWorker/' },
     ],
   },
   {
