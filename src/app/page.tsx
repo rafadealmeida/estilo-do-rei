@@ -16,8 +16,13 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { IFormInput, loginSchema } from '@/zod/loginSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
+import CheckIcon from '@mui/icons-material/Check';
+
+import ErrorIcon from '@mui/icons-material/Error';
 
 import { useRouter } from 'next/navigation';
+import { Alert, Grid } from '@mui/material';
+import { useAlert } from '@/hooks/useAlert';
 
 function Copyright(props: any) {
   return (
@@ -39,6 +44,7 @@ function Copyright(props: any) {
 
 export default function SignIn() {
   const router = useRouter();
+  const { alert, showAlert } = useAlert();
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
     console.log(data);
@@ -46,12 +52,25 @@ export default function SignIn() {
       const response = await axios.post('/api/auth/login', data);
 
       if (response.status === 200) {
-        router.push('/dashboard');
+        const { isAdmin } = response.data;
+        if (isAdmin) {
+          router.push('/dashboard');
+        } else {
+          router.push('/barberService');
+        }
       } else {
-        console.error('Login failed');
+        showAlert('error', 'Erro fazer login');
       }
     } catch (error) {
       console.error('Login failed', error);
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        showAlert(
+          'error',
+          'Suas credenciais estão incorretas. Verifique-as e tente novamente!',
+        );
+      } else {
+        showAlert('error', 'Erro fazer login');
+      }
     }
   };
 
@@ -126,20 +145,34 @@ export default function SignIn() {
           >
             Logar
           </Button>
-          {/* <Grid container>
-            <Grid item xs>
+          <Grid container>
+            {/* <Grid item xs>
               <Link href="#" variant="body2">
                 Esqueceu a senha?
               </Link>
-            </Grid>
+            </Grid> */}
             <Grid item>
-              <Link href="#" variant="body2">
-                {"Não tem uma conta? Clique aqui!"}
+              <Link href="/barberClient/add" variant="body2">
+                {'Não tem uma conta? Clique aqui!'}
               </Link>
             </Grid>
-          </Grid> */}
+          </Grid>
         </Box>
       </Box>
+      {alert.visible && (
+        <Alert
+          icon={
+            alert.status === 'success' ? (
+              <CheckIcon fontSize="inherit" />
+            ) : (
+              <ErrorIcon fontSize="inherit" />
+            )
+          }
+          severity={alert.status}
+        >
+          {alert.message}
+        </Alert>
+      )}
       <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>
   );

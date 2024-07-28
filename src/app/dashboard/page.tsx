@@ -22,8 +22,8 @@ const sessions = [
   {
     title: 'Clientes',
     cards: [
-      { label: 'Adicionar Cliente', link: '#' },
-      { label: 'Visualizar Clientes', link: '#' },
+      // { label: 'Adicionar Cliente', link: '/barberClient/add' },
+      { label: 'Visualizar Clientes', link: '/barberClient/' },
     ],
   },
   {

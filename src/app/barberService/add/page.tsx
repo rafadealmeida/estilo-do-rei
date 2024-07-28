@@ -1,30 +1,23 @@
 'use client';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-// import FormControlLabel from '@mui/material/FormControlLabel';
-// import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
-// import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import theme from '@/theme';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { IFormInput, loginSchema } from '@/zod/loginSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import InputMask from 'react-input-mask';
 
-import { useRouter } from 'next/navigation';
 import { Servico, servicoSchema } from '@/zod/servicoSchema';
-import { Alert } from '@mui/material';
+import { Alert, AlertProps } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 
 import ErrorIcon from '@mui/icons-material/Error';
-import { useState } from 'react';
+import { useAlert } from '@/hooks/useAlert';
 
 function Copyright(props: any) {
   return (
@@ -48,18 +41,8 @@ const processValue = (value: string): string => {
   return value.replace(/[^\d,]/g, '').replace(',', '.');
 };
 
-interface AlertProps {
-  visible: boolean;
-  status: 'success' | 'error' | '';
-  message: string;
-}
-
 export default function Services() {
-  const [alert, setAlert] = useState<AlertProps>({
-    visible: false,
-    status: '',
-    message: '',
-  });
+  const { alert, showAlert } = useAlert();
 
   const onSubmit: SubmitHandler<Servico> = async (data) => {
     const processedData = {
@@ -71,27 +54,13 @@ export default function Services() {
       const response = await axios.post('/api/service/create', processedData);
 
       if (response.status === 201) {
-        setAlert({
-          visible: true,
-          status: 'success',
-          message: 'Serviço criado com sucesso',
-        });
+        showAlert('success', 'Serviço criado com sucesso');
       } else {
-        setAlert({
-          visible: true,
-          status: 'error',
-          message: 'Falha ao criar serviço',
-        });
+        showAlert('error', 'Falha ao criar serviço');
       }
     } catch (error) {
       console.error('Post service fail', error);
-      setAlert({
-        visible: true,
-        status: 'error',
-        message: 'Falha ao criar serviço',
-      });
-    } finally {
-      setTimeout(() => setAlert({ ...alert, visible: false }), 3000);
+      showAlert('success', 'Serviço criado com sucesso');
     }
   };
 
