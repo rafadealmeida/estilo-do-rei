@@ -9,9 +9,14 @@ const prisma = new PrismaClient();
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const validatedData = servicoSchema.parse(body);
+
+    const { nome, valor } = body;
+
     const newServico = await prisma.servico.create({
-      data: validatedData,
+      data: {
+        nome,
+        valor,
+      },
     });
     return NextResponse.json(newServico, { status: 201 });
   } catch (error) {

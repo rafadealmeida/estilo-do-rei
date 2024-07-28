@@ -20,6 +20,11 @@ import InputMask from 'react-input-mask';
 
 import { useRouter } from 'next/navigation';
 import { Servico, servicoSchema } from '@/zod/servicoSchema';
+import { Alert } from '@mui/material';
+import CheckIcon from '@mui/icons-material/Check';
+
+import ErrorIcon from '@mui/icons-material/Error';
+import { useState } from 'react';
 
 function Copyright(props: any) {
   return (
@@ -39,9 +44,55 @@ function Copyright(props: any) {
   );
 }
 
+const processValue = (value: string): string => {
+  return value.replace(/[^\d,]/g, '').replace(',', '.');
+};
+
+interface AlertProps {
+  visible: boolean;
+  status: 'success' | 'error' | '';
+  message: string;
+}
+
 export default function Services() {
+  const [alert, setAlert] = useState<AlertProps>({
+    visible: false,
+    status: '',
+    message: '',
+  });
+
   const onSubmit: SubmitHandler<Servico> = async (data) => {
-    console.log(data);
+    const processedData = {
+      ...data,
+      valor: processValue(data.valor),
+    };
+    console.log('processedData', processedData);
+    try {
+      const response = await axios.post('/api/service/create', processedData);
+
+      if (response.status === 201) {
+        setAlert({
+          visible: true,
+          status: 'success',
+          message: 'Serviço criado com sucesso',
+        });
+      } else {
+        setAlert({
+          visible: true,
+          status: 'error',
+          message: 'Falha ao criar serviço',
+        });
+      }
+    } catch (error) {
+      console.error('Post service fail', error);
+      setAlert({
+        visible: true,
+        status: 'error',
+        message: 'Falha ao criar serviço',
+      });
+    } finally {
+      setTimeout(() => setAlert({ ...alert, visible: false }), 3000);
+    }
   };
 
   const {
@@ -91,7 +142,7 @@ export default function Services() {
             name="valor"
             control={control}
             render={({ field }) => (
-              <InputMask mask="R$ 99.999.999,99" maskChar="" {...field}>
+              <InputMask mask="R$ 99,99" maskChar="" {...field}>
                 {(inputProps) => (
                   <TextField
                     {...inputProps}
@@ -115,10 +166,24 @@ export default function Services() {
             sx={{ mt: 3, mb: 2 }}
             disabled={isSubmitting}
           >
-            Logar
+            Adicionar Serviço
           </Button>
         </Box>
       </Box>
+      {alert.visible && (
+        <Alert
+          icon={
+            alert.status === 'success' ? (
+              <CheckIcon fontSize="inherit" />
+            ) : (
+              <ErrorIcon fontSize="inherit" />
+            )
+          }
+          severity={alert.status}
+        >
+          {alert.message}
+        </Alert>
+      )}
       <Copyright sx={{ mt: 8, mb: 4 }} />
     </Container>
   );
