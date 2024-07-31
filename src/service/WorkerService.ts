@@ -4,7 +4,7 @@ export interface Funcionario {
   nome: string;
   id: number;
 }
-
+// @ts-ignore
 const get = async (): Promise<Funcionario[]> => {
   try {
     const response = await axios.get('/api/worker');

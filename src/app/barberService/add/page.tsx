@@ -112,6 +112,7 @@ export default function Services() {
             control={control}
             render={({ field }) => (
               <InputMask mask="R$ 99,99" maskChar="" {...field}>
+                {/*  @ts-ignore */}
                 {(inputProps) => (
                   <TextField
                     {...inputProps}
@@ -148,6 +149,7 @@ export default function Services() {
               <ErrorIcon fontSize="inherit" />
             )
           }
+          // @ts-ignore
           severity={alert.status}
         >
           {alert.message}

@@ -103,6 +103,7 @@ export default function Services() {
               <ErrorIcon fontSize="inherit" />
             )
           }
+          // @ts-ignore
           severity={alert.status}
         >
           {alert.message}

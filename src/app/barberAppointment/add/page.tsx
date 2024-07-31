@@ -320,6 +320,7 @@ export default function AgendamentoForm() {
               <ErrorIcon fontSize="inherit" />
             )
           }
+          // @ts-ignore
           severity={alert.status}
         >
           {alert.message}

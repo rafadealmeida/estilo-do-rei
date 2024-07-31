@@ -168,6 +168,7 @@ export default function SignIn() {
               <ErrorIcon fontSize="inherit" />
             )
           }
+          // @ts-ignore
           severity={alert.status}
         >
           {alert.message}
