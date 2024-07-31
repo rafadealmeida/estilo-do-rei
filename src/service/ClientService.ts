@@ -4,6 +4,7 @@ export interface Clients {
   nome: string;
   telefone: string;
   email: string;
+  id: number;
 }
 
 const get = async (): Promise<Clients[]> => {

@@ -36,8 +36,8 @@ const sessions = [
   {
     title: 'Agendamentos',
     cards: [
-      { label: 'Adicionar Agendamento', link: '#' },
-      { label: 'Visualizar Agendamentos', link: '#' },
+      { label: 'Adicionar Agendamento', link: '/barberAppointment/add' },
+      { label: 'Visualizar Agendamentos', link: '/barberAppointment/' },
     ],
   },
 ];
