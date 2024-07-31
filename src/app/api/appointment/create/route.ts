@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import { ZodError } from 'zod';
-import { agendamentoSchema } from '@/zod/agendamentoSchema'; // Certifique-se de importar o esquema correto
-
-const prisma = new PrismaClient();
+import { agendamentoSchema } from '@/zod/agendamentoSchema';
+import prisma from '../../../../../prisma/prismaClient';
 
 export async function POST(req: NextRequest) {
   try {

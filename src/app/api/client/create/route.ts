@@ -1,10 +1,8 @@
 // app/api/services/create/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import { ZodError } from 'zod';
 import bcrypt from 'bcrypt';
-
-const prisma = new PrismaClient();
+import prisma from '../../../../../prisma/prismaClient';
 
 export async function POST(req: NextRequest) {
   try {

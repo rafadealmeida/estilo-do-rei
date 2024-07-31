@@ -1,10 +1,7 @@
 // app/api/services/create/route.ts
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import { ZodError } from 'zod';
-import { servicoSchema } from '@/zod/servicoSchema';
-
-const prisma = new PrismaClient();
+import prisma from '../../../../../prisma/prismaClient';
 
 export async function POST(req: NextRequest) {
   try {
