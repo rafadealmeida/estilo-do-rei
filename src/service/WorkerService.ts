@@ -2,6 +2,7 @@ import axios from 'axios';
 
 export interface Funcionario {
   nome: string;
+  id: number;
 }
 
 const get = async (): Promise<Funcionario[]> => {

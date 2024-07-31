@@ -3,6 +3,7 @@ import axios from 'axios';
 export interface BarberService {
   nome: string;
   valor: string;
+  id: number;
 }
 
 const get = async (): Promise<BarberService[]> => {

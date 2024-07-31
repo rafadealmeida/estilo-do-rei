@@ -9,17 +9,17 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Alert, Skeleton, Toolbar, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import { ClientService } from '@/service/ClientService';
 import { formatPhoneNumber } from '@/utils/formatPhoneNumber';
+import { AppointmentService } from '@/service/Appointment';
 
-export default function BarberClients() {
+export default function TableService() {
   const {
-    data: clients,
+    data: agendamentos,
     isLoading,
     isError,
   } = useQuery({
-    queryFn: async () => await ClientService.get(),
-    queryKey: ['clients'],
+    queryFn: async () => await AppointmentService.get(),
+    queryKey: ['agendamentos'],
   });
 
   return (
@@ -42,37 +42,51 @@ export default function BarberClients() {
               id="tableTitle"
               component="div"
             >
-              Clientes
+              Agendamentos
             </Typography>
           </Toolbar>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell>Nome</TableCell>
-                <TableCell align="right">Email</TableCell>
+                <TableCell>Serviço</TableCell>
+                <TableCell align="right">Cliente</TableCell>
+                <TableCell align="right">Data</TableCell>
+                <TableCell align="right">Hora</TableCell>
                 <TableCell align="right">Telefone</TableCell>
+                <TableCell align="right">Funcionário</TableCell>
               </TableRow>
             </TableHead>
-            {clients !== undefined && (
-              <TableBody>
-                {clients?.map((row) => (
+            <TableBody>
+              {agendamentos !== undefined &&
+                agendamentos.length > 0 &&
+                agendamentos.map((row) => (
                   <TableRow
-                    key={row.nome}
+                    key={`${row.fk_funcionario_id}_${row.fk_servico_id}_${row.data}`}
                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                   >
                     <TableCell component="th" scope="row">
-                      {row.nome}
+                      {/* Supondo que você tenha um campo `servico` no `row`, ajuste conforme necessário */}
+                      {row.servico?.nome || 'Não disponível'}
                     </TableCell>
-                    <TableCell align="right">{row.email}</TableCell>
+                    <TableCell align="right">{row.cliente.nome}</TableCell>
                     <TableCell align="right">
-                      {row.telefone.length > 0
-                        ? formatPhoneNumber(row.telefone)
+                      {new Date(row.data).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell align="right">
+                      {new Date(row.horario).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </TableCell>
+                    <TableCell align="right">
+                      {row.cliente.telefone
+                        ? formatPhoneNumber(row.cliente.telefone)
                         : 'Não cadastrado'}
                     </TableCell>
+                    <TableCell align="right">{row.funcionario.nome}</TableCell>
                   </TableRow>
                 ))}
-              </TableBody>
-            )}
+            </TableBody>
           </Table>
         </TableContainer>
       )}
