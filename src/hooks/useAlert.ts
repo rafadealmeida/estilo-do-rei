@@ -4,7 +4,7 @@ import { AlertPropsFeedBack } from '@/@types/AlertProps';
 export const useAlert = (
   initialState: AlertPropsFeedBack = {
     visible: false,
-    status: '',
+    status: 'success',
     message: '',
   },
 ) => {
