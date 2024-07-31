@@ -5,7 +5,7 @@ export interface BarberService {
   valor: string;
   id: number;
 }
-
+// @ts-ignore
 const get = async (): Promise<BarberService[]> => {
   try {
     const response = await axios.get('/api/service');
