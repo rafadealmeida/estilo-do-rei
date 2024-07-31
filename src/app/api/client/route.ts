@@ -12,11 +12,6 @@ export async function GET() {
           not: 'estilodorei@senac.com',
         },
       },
-      select: {
-        nome: true,
-        email: true,
-        telefone: true,
-      },
     });
     return NextResponse.json(clients, { status: 200 });
   } catch (error) {
