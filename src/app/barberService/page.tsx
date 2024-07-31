@@ -64,7 +64,7 @@ export default function TableService() {
                       {row.nome}
                     </TableCell>
                     <TableCell align="right">
-                      {formatCurrency(row.valor)}
+                      {formatCurrency(Number(row.valor))}
                     </TableCell>
                   </TableRow>
                 ))}

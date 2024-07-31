@@ -6,8 +6,7 @@ export interface Clients {
   email: string;
   id: number;
 }
-// @ts-ignore
-const get = async (): Promise<Clients[]> => {
+const get = async (): Promise<Clients[] | undefined> => {
   try {
     const response = await axios.get('/api/client');
     return response.data as Clients[];

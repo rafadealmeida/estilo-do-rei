@@ -23,8 +23,8 @@ export interface AppointmentService {
   funcionario: Funcionario;
   servico: Servico;
 }
-// @ts-ignore
-const get = async (): Promise<AppointmentService[]> => {
+
+const get = async (): Promise<AppointmentService[] | undefined> => {
   try {
     const response = await axios.get('/api/appointment');
     return response.data as AppointmentService[];

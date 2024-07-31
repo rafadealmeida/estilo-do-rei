@@ -4,8 +4,7 @@ export interface Funcionario {
   nome: string;
   id: number;
 }
-// @ts-ignore
-const get = async (): Promise<Funcionario[]> => {
+const get = async (): Promise<Funcionario[] | undefined> => {
   try {
     const response = await axios.get('/api/worker');
     return response.data as Funcionario[];
