@@ -72,7 +72,7 @@ para que a turma possa visualizar como o projeto será.
 4. Execute as migrations do Prisma:
 
    ```bash
-   npx prisma migrate dev
+   npx prisma generate 
    ```
 
 5. Inicie o servidor de desenvolvimento:
